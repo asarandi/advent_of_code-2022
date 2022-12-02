@@ -4,34 +4,21 @@ with open("input.txt") as fp:
     data = fp.read().splitlines()
     fp.close()
 
-rock = "rock"
-paper = "paper"
-scissors = "scissors"
-
-shapes = {rock: 1, paper: 2, scissors: 3}
-win = {paper: rock, rock: scissors, scissors: paper}
+A, B, C = 1, 2, 3
+win = {B: A, A: C, C: B}
 lose = dict(zip(win.values(), win.keys()))
 
 
-def play(f: bool) -> int:
+def play(i: int) -> int:
     n = 0
     for s in data:
-        l, r = s.strip().split()
-        l = {"A": rock, "B": paper, "C": scissors}[l]
-
-        if f:
-            r = {"X": rock, "Y": paper, "Z": scissors}[r]
-        else:
-            r = {"X": win[l], "Y": l, "Z": lose[l]}[r]
-
-        n += shapes[r]
-
-        if l == r:
-            n += 3
-        elif win[r] == l:
-            n += 6
+        L, R = s.strip().split()
+        L = {"A": A, "B": B, "C": C}[L]
+        R = {"X": (A, win[L]), "Y": (B, L), "Z": (C, lose[L])}[R][i]
+        n += 3 if L == R else 6 if win[R] == L else 0
+        n += R
     return n
 
 
-print("part 1:", play(True))
-print("part 2:", play(False))
+print("part 1:", play(0))
+print("part 2:", play(1))
