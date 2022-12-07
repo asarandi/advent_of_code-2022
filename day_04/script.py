@@ -11,7 +11,7 @@ for s in S:
     a, b, c, d = map(int, re.findall(r"(\d+)", s))
     v, w = set(range(a, b + 1)), set(range(c, d + 1))
     u = v & w
-    p1 += 1 if u == v or u == w else 0
+    p1 += 1 if u in (v, w) else 0
     p2 += 1 if len(u) > 0 else 0
 
 print(p1, p2)
