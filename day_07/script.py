@@ -1,29 +1,22 @@
 #!/usr/bin/env python3
 
+from collections import defaultdict
+
 with open("input.txt") as fp:
     S = fp.read().splitlines()
     fp.close()
 
-S += ["$ cd .."]
-
-path, size = [], []
-seen = {}
-
+path, seen = [], defaultdict(int)
 for s in S:
-    z = s.split()
+    args = s.split()
     if s == "$ cd ..":
-        n = size.pop()
-        size[-1] += n
-        p = "/".join(path)
-        seen[p] = n
         path.pop()
     elif s.startswith("$ cd "):
-        path.append(z[2])
-        size.append(0)
-    elif z[0].isdigit():
-        n = int(z[0])
-        size[-1] += n
+        path.append(args[2])
+    elif args[0].isdigit():
+        n = int(args[0])
+        for i in range(1, len(path) + 1):
+            seen["/".join(path[:i])] += n
 
-p1 = sum(filter(lambda s: s <= 100000, seen.values()))
-p2 = min(filter(lambda s: size[0] - 40000000 <= s, seen.values()))
-print(p1, p2)
+print(sum([i for i in seen.values() if i <= 100_000]))
+print(min([i for i in seen.values() if seen["/"] - 40_000_000 <= i]))
