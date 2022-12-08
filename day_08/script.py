@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import math
-
 with open("input.txt") as fp:
     S = fp.read().splitlines()
     fp.close()
@@ -12,22 +10,20 @@ for r, row in enumerate(S):
         G[(r, c)] = int(col)
 
 p1, p2 = 0, 0
-for yx, height in G.items():
-    y, x = yx
-    visible, scores = False, []
+for (y, x), height in G.items():
+    visible, score = False, 1
     for (i, j) in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
         sy, sx = y, x
         vis, ct = True, 0
         while vis:
             sy, sx = sy + i, sx + j
-            if not (0 <= sy and sy < N and 0 <= sx and sx < M):
+            if not (0 <= sy < N and 0 <= sx < M):
                 break
             ct += 1
             vis &= G[(sy, sx)] < height
         visible |= vis
-        scores.append(ct)
+        score *= ct
     p1 += 1 if visible else 0
-    p = math.prod(scores)
-    p2 = p if p > p2 else p2
+    p2 = score if score > p2 else p2
 
 print(p1, p2)
