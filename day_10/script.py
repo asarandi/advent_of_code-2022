@@ -4,25 +4,15 @@ with open("input.txt") as fp:
     S = fp.read().splitlines()
     fp.close()
 
-screen, cycles = set(), {20, 60, 100, 140, 180, 220}
-cy, x, p1 = 0, 1, 1
+p1, cy, x, G = 0, 0, 1, set()
 for s in S:
-    cmd = s[:4]
-    for _ in range({"noop": 1, "addx": 2}[cmd]):
-        sy, sx = cy // 40, cy % 40
-        if sx in (x - 1, x, x + 1):
-            screen.add((sy, sx))
-        cy += 1
-        if cy in cycles:
-            p1 += cy * x
-    if cmd == "addx":
-        x += int(s[5:])
+    for _ in range({"noop": 1, "addx": 2}[s[:4]]):
+        sy, sx, cy = cy // 40, cy % 40, cy + 1
+        G.add((sy, sx) if sx in (x - 1, x, x + 1) else -1)
+        p1 += cy * x if cy in (20, 60, 100, 140, 180, 220) else 0
+    x += int(s[5:]) if s[:4] == "addx" else 0
 
-print(p1 - 1)
+print(p1)
 for y in range(6):
     for x in range(40):
-        if (y, x) in screen:
-            print("#", end="")
-        else:
-            print(" ", end="")
-    print()
+        print("#" if (y, x) in G else " ", end="\n" if x == 39 else "")
