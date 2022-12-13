@@ -14,7 +14,7 @@ for y, row in enumerate(F):
         E = (y, x) if col == "E" else E
         candidates += [(y, x)] if col == "a" else []
 
-G[S], G[E] = ord("a"), ord("z") + 1
+G[S], G[E] = ord("a"), ord("z")
 
 
 def moves(p: tuple):
@@ -24,23 +24,19 @@ def moves(p: tuple):
             yield step
 
 
-def play(starting_points: [tuple]) -> int:
-    best = len(F) * len(F[0])
-    for sp in starting_points:
-        seen, queue = {}, deque([(0, sp)])
-        while queue:
-            depth, pos = queue.popleft()
-            if pos == E:
-                best = depth if depth < best else best
-                break
-            if pos in seen:
+def play(yx: [tuple]) -> int:
+    seen, queue = {}, deque(map(lambda p: (0, p), yx))
+    while queue:
+        depth, point = queue.popleft()
+        if point == E:
+            return depth
+        if point in seen:
+            continue
+        seen[point] = True
+        for step in moves(point):
+            if step in seen:
                 continue
-            seen[pos] = True
-            for step in moves(pos):
-                if step in seen:
-                    continue
-                queue.append((depth + 1, step))
-    return best
+            queue.append((depth + 1, step))
 
 
 print(play([S]), play(candidates))
